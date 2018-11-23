@@ -18,10 +18,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.map.InverseMapper;
+
 
 public class lab {
 	public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
@@ -82,15 +81,7 @@ public class lab {
             
         }
     }
-	public static class IntWritableDecreasingComparator extends IntWritable.Comparator{
-    	public int compare(WritableComparable x,WritableComparable y){
-    		return -super.compare(x,y);
-    	}
-
-    	public int compare(byte[] a,int b,int c,byte[] d,int e,int f){
-    		return -super.compare(a, b, c, d, e, f);
-    	}
-    }
+	
     public static void main(String[] args)throws Exception{
     	Configuration conf = new Configuration();
 		conf.setInt("k", Integer.parseInt(args[2]));
@@ -109,19 +100,7 @@ public class lab {
         FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
         FileOutputFormat.setOutputPath(job, save);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
-        if (job.waitForCompletion(true)){
-			Job sort = new Job(conf, "sort");
-			sort.setJarByClass(lab.class);
-			FileInputFormat.addInputPath(sort, save);
-			sort.setInputFormatClass(SequenceFileInputFormat.class);
-			sort.setMapperClass(InverseMapper.class);
-			sort.setNumReduceTasks(1);
-			FileOutputFormat.setOutputPath(sort, new Path(otherArgs[1]));
-			sort.setOutputKeyClass(IntWritable.class);
-			sort.setOutputValueClass(Text.class);
-			sort.setSortComparatorClass(IntWritableDecreasingComparator.class);
-			System.exit(sort.waitForCompletion(true) ? 0 : 1);
-        }
+	System.exit(job.waitForCompletion(true) ? 0 : 1);
          
     }
 }
