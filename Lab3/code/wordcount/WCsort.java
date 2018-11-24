@@ -29,8 +29,8 @@ public class WCsort {
 		public void map(LongWritable key, Text lines, Context context) throws IOException, InterruptedException {
 			String[] str=lines.toString().split("	");
 			if(str.length==3){
-				k.set(Integer.parseInt((str[0].trim())));
-				v.set(str[1]);
+				k.set(Integer.parseInt((str[1].trim())));
+				v.set(str[0]);
 				context.write(k, v);
 			}
 		}
