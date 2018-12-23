@@ -1,0 +1,2 @@
+KNN与Bayes为预处理，分别处理数据为各自所需
+forecast为预测
